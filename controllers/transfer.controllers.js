@@ -1,8 +1,9 @@
 const { response } = require('express');
+const AppError = require('../helpers/appError');
 const Transfer = require('../models/transfer.model');
 const User = require('../models/user.model');
 
-exports.transferAmount = async (req, res = response) => {
+exports.transferAmount = async (req, res = response, next) => {
   // 1. recibimos el amount, accountNumber, senderUserAccount
   const { amount, accountNumber, senderUserAccount } = req.body;
 
@@ -13,6 +14,11 @@ exports.transferAmount = async (req, res = response) => {
       accountNumber: accountNumber,
     },
   });
+
+  // validamos que la cuenta que va a recibir la transferencia exista
+  if (!userReceiver) {
+    return next(new AppError('Account was not found', 404));
+  }
 
   // 3. obtenemos el id del usuario que recibe
   const reciverUserAccount = userReceiver.accountNumber;
@@ -27,18 +33,12 @@ exports.transferAmount = async (req, res = response) => {
 
   // 5. verificar si el monto a transferir es mayor al monto que tiene en usuario
   if (amount > userSendTransfer.amount) {
-    return res.status(400).json({
-      status: 'Error',
-      message: 'Insufficient funds',
-    });
+    return next(new AppError('Insufficients founds', 400));
   }
 
   // 6. verificar si el id del usuario que recibe es igual al id del usuario que envía
   if (reciverUserAccount === senderUserAccount) {
-    return res.status(400).json({
-      status: 'Error',
-      message: "You can't send money to yourself",
-    });
+    return next(new AppError('You can not send money to yourself', 400));
   }
 
   // 7. constante que se llame newAmountUserSendTransfer dónde se guardara el monto que tiene el usuario

@@ -11,6 +11,8 @@ const { transferRouter } = require('../routes/transfer.routes');
 // importamos la database
 const { db } = require('../database/db');
 const morgan = require('morgan');
+const globalErrorHandler = require('../controllers/error.controller');
+const AppError = require('../helpers/appError');
 
 // importamos las rutas que vienen de routes
 
@@ -55,6 +57,13 @@ class Server {
   routes() {
     this.app.use(this.paths.users, usersRouter);
     this.app.use(this.paths.transfers, transferRouter);
+
+    this.app.all('*', (req, res, next) => {
+      return next(
+        new AppError(`Can't find ${req.originalUrl} on this server!`, 404)
+      );
+    });
+    this.app.use(globalErrorHandler);
   }
 
   // conexión a la base de datos

@@ -13,10 +13,9 @@ const router = Router();
 router.post(
   '/singup',
   [
-    check('accountNumber', 'Account number is require').not().isEmpty(),
+    check('name', 'Name is require').not().isEmpty(),
     check('password', 'Password is require').not().isEmpty(),
     validateFields,
-    validUserExists,
   ],
   register
 );
