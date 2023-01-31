@@ -1,15 +1,9 @@
 // importamos el modelo creado en models
-const AppError = require('../helpers/appError');
 const Transfer = require('../models/transfer.model');
 const User = require('../models/user.model');
+const catchAsync = require('../helpers/catchAsync');
 
 // TODO: todos los modelos se ejecutan de modo asincronó, por lo que es importane usar el metodo async - await
-
-const catchAsync = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
-  };
-};
 
 //!crear usuario
 exports.register = catchAsync(async (req, res = response) => {

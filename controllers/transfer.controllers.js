@@ -1,9 +1,10 @@
 const { response } = require('express');
 const AppError = require('../helpers/appError');
+const catchAsync = require('../helpers/catchAsync');
 const Transfer = require('../models/transfer.model');
 const User = require('../models/user.model');
 
-exports.transferAmount = async (req, res = response, next) => {
+exports.transferAmount = catchAsync(async (req, res = response, next) => {
   // 1. recibimos el amount, accountNumber, senderUserAccount
   const { amount, accountNumber, senderUserAccount } = req.body;
 
@@ -69,4 +70,4 @@ exports.transferAmount = async (req, res = response, next) => {
     status: 'Success',
     message: 'The transfer was successfully',
   });
-};
+});
