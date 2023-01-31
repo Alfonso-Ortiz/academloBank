@@ -76,14 +76,18 @@ exports.login = async (req, res = response) => {
 
 exports.getHistory = async (req, res = response) => {
   try {
-    // importamos el middleware
-    const { user } = req;
+    const { accountNumber } = req.params;
 
-    // si la busqueda sale bien en el middleware enviamos la respuesta
-    res.status(200).json({
-      status: 'Sucess',
-      message: 'The user has been found successfully',
-      user,
+    const getHistory = await Transfer.findAll({
+      where: {
+        senderUserAccount: accountNumber,
+      },
+    });
+
+    return res.status(200).json({
+      status: 'sucess',
+      message: 'The history has been found successfully',
+      getHistory,
     });
   } catch (error) {
     console.log(error);

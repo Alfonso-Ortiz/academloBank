@@ -23,7 +23,7 @@ router.post(
 
 router.post('/login', login);
 
-router.get('/:id/history', getHistory);
+router.get('/:accountNumber/history', getHistory);
 
 module.exports = {
   usersRouter: router,
